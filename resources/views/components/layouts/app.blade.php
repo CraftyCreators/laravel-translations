@@ -1,35 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel Translations UI') }}</title>
+<head>
+    <title>
+        {{ ($breadcrumb = Breadcrumbs::current()) ? $breadcrumb->title . ' - ' . config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
+    </title>
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="icon" type="image/png" href="{{ theme_url('images/favicon.png') }}">
+    <link rel="stylesheet"
+        href="https://fonts.bunny.net/css2?family=Plus Jakarta Sans:wght@200;300;400;600;700&display=swap">
+    @vite(['resources/themes/admin/assets/sass/app.scss', 'resources/themes/admin/assets/sass/translation/app.scss', 'resources/themes/admin/assets/js/app.js'])
+    {!! Meta::toHtml() !!}
+    @stack('page_header')
+    <wireui:scripts />
+    <script src="{{ asset('vendor/translations/app.js') }}" defer></script>
+</head>
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-
-        <!-- Scripts -->
-        <wireui:scripts />
-        <script src="{{ asset('vendor/translations/app.js') }}" defer></script>
-        <link rel="stylesheet" href="{{ asset('vendor/translations/app.css') }}">
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-full">
-            <x-translations::header />
-
-            <main class="-mt-32">
-                <div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-                    {{ $slot }}
+<body>
+    <x-admin-sidebar />
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <x-application-header />
+        <div class="body flex-grow-1 px-3">
+            <div class="container-fluid">
+                <div class="breadcrumbs-container mb-4">
+                    {{ Breadcrumbs::render() }}
                 </div>
-            </main>
+                <x-application-alerts />
+                {{ $slot }}
+            </div>
         </div>
+        <x-application-footer />
+    </div>
 
-        @livewire('livewire-ui-modal')
-        <x-notifications z-index="z-50" />
-        <x-dialog z-index="z-50" blur="md" align="center" />
+    @livewire('livewire-ui-modal')
+    <x-notifications z-index="z-50" />
+    <x-dialog z-index="z-50" blur="md" align="center" />
+    <x-application-messages />
+    <x-application-logout-form />
+    @yield('footer_scripts')
+    @stack('page_scripts')
+</body>
 
-        @stack('scripts')
-    </body>
 </html>
